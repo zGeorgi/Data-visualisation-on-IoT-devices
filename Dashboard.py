@@ -27,9 +27,9 @@ shared_data = {
 reader_thread = Thread(target=read_serial_data, args=(shared_data,), daemon=True)
 reader_thread.start()
 
-# SET the url like SYSTEM variable or in another File- SHOULD NOT BE SUBMIT IN THE DOCUMENT!!!!
-power_bi_url = "https://api.powerbi.com/beta/f0033efe-d82e-4c5f-a712-3a3948bb453e/datasets/7357ea69-4b2d-486c-818a-f7fa3dfab98b/rows?ctid=f0033efe-d82e-4c5f-a712-3a3948bb453e&experience=power-bi&key=ixoLnxW3RjoEwaxn4aZul%2BWm8AqAePN%2F24Ef0jyZAUAebk3sKekffkIru2Um0eWB1yCK72FLuQXESI1OtG%2BlVA%3D%3D"
-# background thread send POST to Power BI
+# SET the url like a SYSTEM variable or in another File- SHOULD NOT BE SUBMITTED IN THE DOCUMENT!!!!
+power_bi_url = "https://api.powerbi.com/beta/f0033efe-d82e-4c5f-a712-3a3948bb453e/daXE"
+# background thread sends a POST to Power BI
 powerbi = PowerBISender(power_bi_url, shared_data)
 power_bi_thread = Thread(target=powerbi.power_bi_post, daemon=True)
 power_bi_thread.start()
