@@ -1,0 +1,64 @@
+#include <dht_nonblocking.h>
+#include "SR04.h"
+
+//DHT11 Setup
+#define DHT_SENSOR_TYPE DHT_TYPE_11
+const int ledPin = 2;
+const int DHT_SENSOR_PIN = 13;
+DHT_nonblocking dht_sensor(DHT_SENSOR_PIN, DHT_SENSOR_TYPE);
+
+//  LDR Setup 
+const int ldrPin = A0;
+
+// Sound Sensor Setup 
+const int soundAnalogPin = A1;
+
+//  Ultrasonic Sensor Setup 
+#define TRIG_PIN 12
+#define ECHO_PIN 11
+SR04 sr04 = SR04(ECHO_PIN, TRIG_PIN);
+
+//  Timing Variables 
+unsigned long lastTime = 0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  unsigned long currentMillis = millis();
+
+  // Send all sensor values every 0.2 second
+  if (currentMillis - lastTime >= 200) {
+    float temperature = 0, humidity = 0;
+
+    if (dht_sensor.measure(&temperature, &humidity)) {
+      Serial.print("TEMP=");
+      Serial.println(temperature, 1);
+
+      Serial.print("HUM=");
+      Serial.println(humidity, 1);
+    }
+
+    int lightValue = analogRead(ldrPin);
+    Serial.print("LIGHT=");
+    Serial.println(lightValue);
+
+    int soundAnalog = analogRead(soundAnalogPin);
+    Serial.print("SOUND=");
+    Serial.println(soundAnalog);
+
+    if (soundAnalog <= 100){
+    digitalWrite(ledPin, HIGH);
+    }
+    else{
+      digitalWrite(ledPin, LOW);
+    }
+
+    long distance = sr04.Distance();
+    Serial.print("DIST=");
+    Serial.println(distance);
+
+    lastTime = currentMillis;
+  }
+}
