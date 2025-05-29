@@ -1,0 +1,36 @@
+import mysql.connector
+import time
+
+class ElapsedTimeLogger:
+    def __init__(self, host, user, password, database):
+        self.host = host
+        self.user = user
+        self.password = password
+        self.database = database
+
+    def log_function_time(self, func):
+        def wrapper(*args, **kwargs):
+            start_time = time.time()
+            result = func(*args, **kwargs)
+            elapsed_time = time.time() - start_time
+
+            # Connect to the database
+            conn = mysql.connector.connect(
+                host=self.host,
+                user=self.user,
+                password=self.password,
+                database=self.database
+            )
+            cursor = conn.cursor()
+
+            # SQL to insert record
+            query = "INSERT INTO function_timings (function_name, elapsed_time) VALUES (%s, %s)"
+            cursor.execute(query, (func.__name__, elapsed_time))
+
+            # Commit and close
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return result
+        return wrapper
